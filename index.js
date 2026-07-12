@@ -81,10 +81,6 @@ async function giveRoles(member) {
 
     console.log(`${member.user.tag} earned ${role.name}`);
 
-    const channel = member.guild.channels.cache.find(
-    c => c.name === "general"
-);
-
     if (channel) {
         channel.send(
             `🎉 ${member} has unlocked the **${role.name}** role!`
