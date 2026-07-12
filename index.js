@@ -33,6 +33,14 @@ const roles = {
     75: "ultimate lyn lover"
 };
 
+// Command list
+const commands = {
+    "!lynhelp": "Shows this command list",
+    "!scan": "Scans all messages and updates lyn counts (Admin only)",
+    "!lynlovers": "Shows the Lyn Lovers leaderboard (Staff only)",
+    "!changelyn @user amount": "Changes someone's lyn count (Admin only)"
+};
+
 // Load counts
 let counts = {};
 
@@ -252,6 +260,20 @@ if (message.content.toLowerCase() === "!lynlovers") {
     return message.channel.send(text);
 }
 
+// ===========================
+// !lynhelp command
+// ===========================
+
+if (message.content.toLowerCase() === "!lynhelp") {
+
+    let text = "🩷 **Lyn Bot Commands** 🩷\n\n";
+
+    for (const command in commands) {
+        text += `\`${command}\`\n> ${commands[command]}\n\n`;
+    }
+
+    return message.reply(text);
+}
 
     // ===========================
     // Count lyn messages
