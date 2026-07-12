@@ -76,73 +76,92 @@ client.once("ready", () => {
 });
 
 client.on("messageCreate", async (message) => {
+
+
+    if (message.author.bot) return;
+    if (!message.guild) return;
+
+
     // ===========================
-// !lynlovers leaderboard
-// ===========================
+    // !scan command
+    // ===========================
 
-// ===========================
-// !lynlovers leaderboard
-// ===========================
+    if (message.content.toLowerCase() === "!scan") {
 
-// ===========================
-// !lynlovers leaderboard
-// ===========================
-
-if (message.content.toLowerCase() === "!lynlovers") {
-
-    const staffRole = message.guild.roles.cache.find(
-        role => role.name === "Staff"
-    );
-
-    let leaderboard = [];
-
-    for (const userId in counts) {
-
-        const user = await client.users.fetch(userId).catch(() => null);
-
-        if (!user) continue;
-
-        leaderboard.push({
-            username: user.username,
-            count: counts[userId]
-        });
-    }
-
-    leaderboard.sort((a, b) => b.count - a.count);
-
-    let text = " **Lyn Lovers** \n\n";
-
-    leaderboard.forEach((user, index) => {
-        text += `${index + 1}. **${user.username}**: ${user.count} lyns\n`;
-    });
-
-
-    // Non-staff
-    if (!message.member.roles.cache.has(staffRole.id)) {
-
-        try {
-            await message.author.send(
-                "❌ You are not allowed to use the `!lynlovers` command.\n\n" +
-                "Here are the current Lyn Lovers stats anyway:\n\n" +
-                text
-            );
-
-            return message.reply("📩To avoid flooding, you don't have permission to use this command, but I sent the stats to your DMs.");
-
-        } catch {
-            return message.reply(
-                "❌ You are not allowed to use this command, and I couldn't DM you."
-            );
+        if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+            return message.reply("❌ You need Administrator permissions.");
         }
+
+        const progress = await message.reply("🔍 Starting scan...");
+
+        counts = {};
+
+        const channels = message.guild.channels.cache.filter(
+            c => c.type === ChannelType.GuildText
+        );
+
+        let scanned = 0;
+
+        for (const channel of channels.values()) {
+
+            scanned++;
+
+            await progress.edit(
+                `🔍 Scanning **#${channel.name}** (${scanned}/${channels.size})`
+            );
+
+            let lastId;
+
+            while (true) {
+
+                const messages = await channel.messages.fetch({
+                    limit: 100,
+                    before: lastId
+                }).catch(() => null);
+
+                if (!messages || messages.size === 0) break;
+
+                messages.forEach(msg => {
+
+                    if (msg.author.bot) return;
+
+                    if (msg.content.toLowerCase().includes("lyn")) {
+                        counts[msg.author.id] =
+                            (counts[msg.author.id] || 0) + 1;
+                    }
+
+                });
+
+                lastId = messages.last().id;
+            }
+        }
+
+        saveCounts();
+
+        for (const userId in counts) {
+
+            const member = await message.guild.members.fetch(userId).catch(() => null);
+
+            if (member) {
+                await giveRoles(member);
+            }
+        }
+
+        return progress.edit(
+            `✅ Scan complete!\n\n👥 Users found: **${Object.keys(counts).length}**`
+        );
     }
 
 
-    // Staff
-    return message.channel.send(text);
-}
+    // ===========================
+    // !lynlovers command
+    // ===========================
+
+    // keep your leaderboard here
+
 
     // ===========================
-    // Count "lyn"
+    // Count lyn messages
     // ===========================
 
     if (!message.content.toLowerCase().includes("lyn"))
@@ -153,86 +172,9 @@ if (message.content.toLowerCase() === "!lynlovers") {
 
     saveCounts();
 
-    console.log(
-        `${message.author.tag}: ${counts[message.author.id]}`
-    );
+    console.log(`${message.author.tag}: ${counts[message.author.id]}`);
 
     await giveRoles(message.member);
-    // ===========================
-// !scan command
-// ===========================
-
-if (message.content.toLowerCase() === "!scan") {
-
-    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-        return message.reply("❌ You need Administrator permissions.");
-    }
-
-    const progress = await message.reply("🔍 Starting scan...");
-
-    counts = {};
-
-    const channels = message.guild.channels.cache.filter(
-        c => c.type === ChannelType.GuildText
-    );
-
-    let scanned = 0;
-
-    for (const channel of channels.values()) {
-
-        scanned++;
-
-        await progress.edit(
-            `🔍 Scanning **#${channel.name}** (${scanned}/${channels.size})`
-        );
-
-        let lastId;
-
-        while (true) {
-
-            const messages = await channel.messages.fetch({
-                limit: 100,
-                before: lastId
-            }).catch(() => null);
-
-            if (!messages || messages.size === 0) break;
-
-            messages.forEach(msg => {
-
-                if (msg.author.bot) return;
-
-                if (msg.content.toLowerCase().includes("lyn")) {
-
-                    counts[msg.author.id] =
-                        (counts[msg.author.id] || 0) + 1;
-
-                }
-
-            });
-
-            lastId = messages.last().id;
-        }
-    }
-
-    saveCounts();
-
-    // Give roles after scan
-    for (const userId in counts) {
-
-        const member = await message.guild.members
-            .fetch(userId)
-            .catch(() => null);
-
-        if (!member) continue;
-
-        await giveRoles(member);
-    }
-
-    progress.edit(
-        `✅ Scan complete!\n\n` +
-        `👥 Users found: **${Object.keys(counts).length}**`
-    );
-}
 
 });
 
