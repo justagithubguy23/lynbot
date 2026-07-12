@@ -36,9 +36,9 @@ const roles = {
 // Command list
 const commands = {
     "!lynhelp": "Shows this command list",
-    "!scan": "Scans all messages and updates lyn counts (Admin only)",
+    "!scan": "Scans all messages and updates lyn counts (Staff only)",
     "!lynlovers": "Shows the Lyn Lovers leaderboard (Staff only)",
-    "!changelyn @user amount": "Changes someone's lyn count (Admin only)"
+    "!changelyn @user amount": "Changes someone's lyn count (Staff only)"
 };
 
 // Load counts
