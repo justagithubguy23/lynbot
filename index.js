@@ -87,7 +87,7 @@ client.on("messageCreate", async (message) => {
 if (message.content.toLowerCase().startsWith("!changelyn")) {
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-        return message.reply("❌ You need Administrator permissions.");
+        return message.reply("❌ Only **Staff** can use this command.");
     }
 
     const args = message.content.split(" ");
