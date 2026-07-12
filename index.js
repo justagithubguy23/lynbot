@@ -62,7 +62,7 @@ function saveCounts() {
 }
 
 // Give milestone roles
-async function giveRoles(member) {
+async function giveRoles(member, channel) {
 
     const total = counts[member.id] || 0;
 
@@ -76,17 +76,18 @@ async function giveRoles(member) {
 
         if (!role) continue;
 
-       if (!member.roles.cache.has(role.id)) {
-    await member.roles.add(role);
+        if (!member.roles.cache.has(role.id)) {
 
-    console.log(`${member.user.tag} earned ${role.name}`);
+            await member.roles.add(role);
 
-    if (channel) {
-        channel.send(
-            `🎉 ${member} has unlocked the **${role.name}** role!`
-        ).catch(() => {});
-    }
-}
+            console.log(`${member.user.tag} earned ${role.name}`);
+
+            if (channel) {
+                await channel.send(
+                    `🎉 ${member} has unlocked the **${role.name}** role!`
+                ).catch(console.error);
+            }
+        }
     }
 }
 
@@ -178,7 +179,7 @@ if (message.content.toLowerCase().startsWith("!changelyn")) {
     const member = await message.guild.members.fetch(target.id).catch(() => null);
 
     if (member) {
-        await giveRoles(member);
+        await giveRoles(member, message.channel);;
     }
 
     return message.reply(
@@ -247,7 +248,7 @@ if (message.content.toLowerCase().startsWith("!changelyn")) {
             const member = await message.guild.members.fetch(userId).catch(() => null);
 
             if (member) {
-                await giveRoles(member);
+                await giveRoles(member, message.channel);;
             }
         }
 
@@ -359,7 +360,7 @@ if (message.content.toLowerCase() === "!lynstats") {
 
     console.log(`${message.author.tag}: ${counts[message.author.id]}`);
 
-    await giveRoles(message.member);
+    await giveRoles(message.member, message.channel);
     await updateTopLynLovers(message.guild);
 
 });
