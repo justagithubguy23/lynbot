@@ -27,6 +27,9 @@ const client = new Client({
 const TOKEN = process.env.TOKEN;
 
 // Role milestones
+
+const TOP_ROLE = "top lyn lover";
+
 const roles = {
     10: "lyn lover`",
     35: "super lyn lover",
@@ -73,9 +76,63 @@ async function giveRoles(member) {
 
         if (!role) continue;
 
-        if (!member.roles.cache.has(role.id)) {
-            await member.roles.add(role);
-            console.log(`${member.user.tag} earned ${role.name}`);
+       if (!member.roles.cache.has(role.id)) {
+    await member.roles.add(role);
+
+    console.log(`${member.user.tag} earned ${role.name}`);
+
+    const channel = member.guild.channels.cache.find(
+    c => c.name === "general"
+);
+
+    if (channel) {
+        channel.send(
+            `🎉 ${member} has unlocked the **${role.name}** role!`
+        ).catch(() => {});
+    }
+}
+    }
+}
+
+async function updateTopLynLovers(guild) {
+
+    const topRole = guild.roles.cache.find(r => r.name === TOP_ROLE);
+
+    if (!topRole) return;
+
+    // Sort users by lyn count
+    const sortedUsers = Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(entry => entry[0]);
+
+    // Remove role from anyone no longer in top 5
+    for (const member of topRole.members.values()) {
+
+        if (!sortedUsers.includes(member.id)) {
+            await member.roles.remove(topRole).catch(() => {});
+        }
+
+    }
+
+    // Give role to current top 5
+    for (const userId of sortedUsers) {
+
+        const member = await guild.members.fetch(userId).catch(() => null);
+
+        if (!member) continue;
+
+        if (!member.roles.cache.has(topRole.id)) {
+
+            await member.roles.add(topRole).catch(() => {});
+
+            const channel = guild.systemChannel;
+
+            if (channel) {
+                channel.send(
+                    `🏆 ${member} is now one of the **top 5 lyn lovers!**`
+                ).catch(() => {});
+            }
         }
     }
 }
@@ -228,6 +285,7 @@ if (message.content.toLowerCase() === "!lynlovers") {
             count: counts[userId]
         });
     }
+    await updateTopLynLovers(message.guild);
 
     leaderboard.sort((a, b) => b.count - a.count);
 
@@ -306,6 +364,7 @@ if (message.content.toLowerCase() === "!lynstats") {
     console.log(`${message.author.tag}: ${counts[message.author.id]}`);
 
     await giveRoles(message.member);
+    await updateTopLynLovers(message.guild);
 
 });
 
