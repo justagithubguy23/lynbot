@@ -30,6 +30,7 @@ const TOKEN = process.env.TOKEN;
 const roles = {
     10: "lyn lover`",
     35: "super lyn lover",
+    50: "mega lyn lover",
     75: "ultimate lyn lover"
 };
 
@@ -38,7 +39,8 @@ const commands = {
     "!lynhelp": "Shows this command list",
     "!scan": "Scans all messages and updates lyn counts (Staff only)",
     "!lynlovers": "Shows the Lyn Lovers leaderboard (Staff only)",
-    "!changelyn @user amount": "Changes someone's lyn count (Staff only)"
+    "!changelyn @user amount": "Changes someone's lyn count (Staff only)",
+    "!lynstats": "Shows how many lyns you have said",
 };
 
 // Load counts
@@ -229,7 +231,7 @@ if (message.content.toLowerCase() === "!lynlovers") {
 
     leaderboard.sort((a, b) => b.count - a.count);
 
-    let text = "🏆 **Lyn Lovers ** 🏆\n\n";
+    let text = "💘 **Lyn Lovers ** 💘\n\n";
 
     leaderboard.forEach((user, index) => {
         text += `${index + 1}. **${user.username}**: ${user.count} lyns\n`;
@@ -273,6 +275,20 @@ if (message.content.toLowerCase() === "!lynhelp") {
     }
 
     return message.reply(text);
+}
+
+// ===========================
+// !lynstats command
+// ===========================
+
+if (message.content.toLowerCase() === "!lynstats") {
+
+    const amount = counts[message.author.id] || 0;
+
+    return message.reply(
+        `📊 **${message.author.username}'s Lyn Stats**\n\n` +
+        ` 🔥 Lyns said: **${amount}**`
+    );
 }
 
     // ===========================
