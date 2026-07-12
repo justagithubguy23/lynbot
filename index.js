@@ -80,6 +80,48 @@ client.on("messageCreate", async (message) => {
     if (message.author.bot) return;
     if (!message.guild) return;
 
+    // ===========================
+// !changelyn command
+// ===========================
+
+if (message.content.toLowerCase().startsWith("!changelyn")) {
+
+    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+        return message.reply("❌ You need Administrator permissions.");
+    }
+
+    const args = message.content.split(" ");
+
+    const target = message.mentions.users.first();
+
+    if (!target) {
+        return message.reply(
+            "❌ Usage: `!changelyn @user amount`"
+        );
+    }
+
+    const amount = Number(args[2]);
+
+    if (isNaN(amount) || amount < 0) {
+        return message.reply(
+            "❌ The amount must be a valid number."
+        );
+    }
+
+    counts[target.id] = amount;
+
+    saveCounts();
+
+    const member = await message.guild.members.fetch(target.id).catch(() => null);
+
+    if (member) {
+        await giveRoles(member);
+    }
+
+    return message.reply(
+        `✅ Changed **${target.username}**'s lyn count to **${amount} lyns**.`
+    );
+}
 
     // ===========================
     // !scan command
