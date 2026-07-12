@@ -1,5 +1,16 @@
 require("dotenv").config();
 
+const express = require("express");
+const app = express();
+
+app.get("/", (req, res) => {
+    res.send("Bot is running!");
+});
+
+app.listen(8000, () => {
+    console.log("Web server running on port 8000");
+});
+
 const { Client, GatewayIntentBits, ChannelType, PermissionsBitField } = require("discord.js");
 const fs = require("fs");
 
@@ -16,7 +27,7 @@ const TOKEN = process.env.TOKEN;
 
 // Role milestones
 const roles = {
-    15: "lyn lover`",
+    10: "lyn lover`",
     35: "super lyn lover",
     75: "ultimate lyn lover"
 };
