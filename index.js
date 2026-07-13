@@ -161,25 +161,6 @@ client.on("messageCreate", async (message) => {
         counts
     );
 
-});
-
-  
-    
-
-
-   
-
-
-
-
-
-
-
-
-    // ===========================
-    // Count lyn messages
-    // ===========================
-
     if (!message.content.toLowerCase().includes("lyn"))
         return;
 
@@ -195,6 +176,25 @@ client.on("messageCreate", async (message) => {
     await giveRoles(message.member, message.channel);
 
     await updateTopLynLovers(message.guild, counts);
+
+});
+
+  
+    
+
+
+   
+
+
+
+
+
+
+
+
+
+
+    
 
 
 });
