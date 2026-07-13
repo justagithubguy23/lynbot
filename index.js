@@ -59,27 +59,7 @@ console.log(
     `Loaded ${client.commands.size} commands.`
 );
 
-client.on("messageCreate", async message=>{
 
-    if(message.author.bot) return;
-
-
-    const args = message.content.split(" ");
-
-    const cmd = args.shift().toLowerCase();
-
-
-    if(!client.commands.has(cmd.substring(1))) return;
-
-
-    const command = client.commands.get(
-        cmd.substring(1)
-    );
-
-
-    await command.execute(message,args);
-
-});
 
 const updateTopLynLovers = require("./utils/updateTopLynLovers");
 
@@ -115,14 +95,6 @@ const roles = {
 
 
 
-if (fs.existsSync("counts.json"))
-try {
-    counts = JSON.parse(fs.readFileSync("counts.json", "utf8"));
-} catch (error) {
-    console.log("⚠️ counts.json was corrupted, creating a new one.");
-    counts = {};
-    saveCounts();
-}
 
 
 
@@ -132,38 +104,64 @@ const botData = {
     saveCounts,
     giveRoles,
     updateTopLynLovers,
-    commands
-
+    
 };
 
 
 client.on("messageCreate", async (message) => {
 
-
-    if (!message.content.startsWith("!"))
-    return;
-
-    const commandName =
-    message.content.slice(1).split(" ")[0].toLowerCase();
-
-const command = commands.get(commandName);
-
-if (command) {
-
-    await command.execute(
-        message,
-        client,
-        botData
-    );
-
-}
-
-
     if (message.author.bot) return;
     if (!message.guild) return;
 
- 
 
+    if (message.content.startsWith("!")) {
+
+        const args = message.content
+            .slice(1)
+            .trim()
+            .split(/\s+/);
+
+        const commandName = args.shift().toLowerCase();
+
+        const command = client.commands.get(commandName);
+
+        if (command) {
+            await command.execute(
+                message,
+                args,
+                botData
+            );
+        }
+    }
+
+
+    if (!message.content.toLowerCase().includes("lyn"))
+        return;
+
+
+    counts[message.author.id] =
+        (counts[message.author.id] || 0) + 1;
+
+
+    saveCounts();
+
+    console.log(
+        `${message.author.tag}: ${counts[message.author.id]}`
+    );
+
+
+    await giveRoles(
+        message.member,
+        message.channel
+    );
+
+
+    await updateTopLynLovers(
+        message.guild,
+        counts
+    );
+
+});
 
   
     
@@ -195,6 +193,6 @@ if (command) {
     await giveRoles(message.member, message.channel);
     await updateTopLynLovers(message.guild, counts);
 
-});
+
 
 client.login(TOKEN);
