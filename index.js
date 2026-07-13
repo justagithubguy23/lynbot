@@ -104,7 +104,7 @@ const botData = {
     saveCounts,
     giveRoles,
     updateTopLynLovers,
-    commands: client
+    commands: client.commands
     
 };
 
@@ -124,13 +124,7 @@ client.on("messageCreate", async message => {
             await command.execute(
                 message,
                 args,
-                {
-                    counts,
-                    saveCounts,
-                    giveRoles,
-                    updateTopLynLovers,
-                    commands: client.commands
-                }
+                botData
             );
         }
     }
