@@ -30,7 +30,8 @@ const botData = {
     counts,
     saveCounts,
     giveRoles,
-    updateTopLynLovers
+    updateTopLynLovers,
+    commands
 };
 
 
@@ -73,14 +74,8 @@ const roles = {
     75: "ultimate lyn lover"
 };
 
-// Command list
-const commands = {
-    "!lynhelp": "Shows this command list",
-    "!scan": "Scans all messages and updates lyn counts (Staff only)",
-    "!lynlovers": "Shows the Lyn Lovers leaderboard (Staff only)",
-    "!changelyn @user amount": "Changes someone's lyn count (Staff only)",
-    "!lynstats": "Shows how many lyns you have said",
-};
+
+
 
 // Load counts
 let counts = {};
