@@ -1,16 +1,13 @@
 module.exports = {
     name: "lynstats",
 
-    async execute(message, counts) {
+    async execute(message, args, data) {
 
-        const amount = counts[message.author.id] || 0;
+        const amount = data.counts[message.author.id] || 0;
 
-        message.reply(
+        return message.reply(
             `📊 **${message.author.username}'s Lyn Stats**\n\n` +
             `🔥 Lyns said: **${amount}**`
         );
-
     }
 };
-const { PermissionsBitField, ChannelType } = require("discord.js");
-
