@@ -193,9 +193,9 @@ client.on("messageCreate", async (message) => {
     
     client.on("messageCreate", async (message) => {
     await giveRoles(message.member, message.channel);
-});
+
     await updateTopLynLovers(message.guild, counts);
 
 
-
+});
 client.login(TOKEN);
