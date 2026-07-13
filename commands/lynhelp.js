@@ -2,7 +2,7 @@ module.exports = {
 
     name: "lynhelp",
 
-    async execute(message, client, data) {
+    async execute(message, args, data) {
 
         let text = "🩷 **Lyn Bot Commands** 🩷\n\n";
 

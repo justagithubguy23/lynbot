@@ -104,32 +104,33 @@ const botData = {
     saveCounts,
     giveRoles,
     updateTopLynLovers,
+    commands: client
     
 };
 
 
-client.on("messageCreate", async (message) => {
+client.on("messageCreate", async message => {
 
     if (message.author.bot) return;
-    if (!message.guild) return;
 
+    const args = message.content.split(" ");
+    const cmd = args.shift().toLowerCase();
 
-    if (message.content.startsWith("!")) {
+    if (cmd.startsWith("!")) {
 
-        const args = message.content
-            .slice(1)
-            .trim()
-            .split(/\s+/);
-
-        const commandName = args.shift().toLowerCase();
-
-        const command = client.commands.get(commandName);
+        const command = client.commands.get(cmd.substring(1));
 
         if (command) {
             await command.execute(
                 message,
                 args,
-                botData
+                {
+                    counts,
+                    saveCounts,
+                    giveRoles,
+                    updateTopLynLovers,
+                    commands: client.commands
+                }
             );
         }
     }
@@ -161,23 +162,12 @@ client.on("messageCreate", async (message) => {
         counts
     );
 
-    if (!message.content.toLowerCase().includes("lyn"))
-        return;
-
-    counts[message.author.id] =
-        (counts[message.author.id] || 0) + 1;
-
-    saveCounts();
-
-    console.log(`${message.author.tag}: ${counts[message.author.id]}`);
+});
 
     
-    client.on("messageCreate", async (message) => {
-    await giveRoles(message.member, message.channel);
+    
 
     await updateTopLynLovers(message.guild, counts);
-
-});
 
   
     
@@ -197,5 +187,4 @@ client.on("messageCreate", async (message) => {
     
 
 
-});
 client.login(TOKEN);
