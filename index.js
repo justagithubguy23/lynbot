@@ -2,6 +2,10 @@ require("dotenv").config();
 
 const { Client, GatewayIntentBits, ChannelType, PermissionsBitField, Collection } = require("discord.js");
 
+const { giveRoles } = require("./utils/giveroles");
+
+const { counts, saveCounts } = require("./utils/counts");
+
 const scanCommand = require("./commands/scan");
 const lynhelpCommand = require("./commands/lynhelp");
 const changelynCommand = require("./commands/changelyn");
@@ -16,6 +20,7 @@ const client = new Client({
         GatewayIntentBits.GuildMembers
     ]
 });
+
 
 
 const fs = require("fs"); 

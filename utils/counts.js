@@ -1,23 +1,28 @@
 const fs = require("fs");
 
-
 let counts = {};
-
 
 if (fs.existsSync("counts.json")) {
 
-    counts = JSON.parse(
-        fs.readFileSync("counts.json","utf8")
-    );
+    try {
+        counts = JSON.parse(
+            fs.readFileSync("counts.json", "utf8")
+        );
+
+    } catch (error) {
+
+        console.log("⚠️ counts.json corrupted");
+        counts = {};
+    }
 
 }
 
 
-function saveCounts(){
+function saveCounts() {
 
     fs.writeFileSync(
         "counts.json",
-        JSON.stringify(counts,null,2)
+        JSON.stringify(counts, null, 2)
     );
 
 }
