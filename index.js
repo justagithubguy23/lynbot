@@ -49,7 +49,7 @@ app.listen(8000, () => {
     console.log("Web server running on port 8000");
 });
 
-const fs = require("fs");
+
 
 const client = new Client({
     intents: [
