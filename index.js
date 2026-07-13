@@ -156,7 +156,6 @@ client.on("messageCreate", async message => {
         counts
     );
 
-     await updateTopLynLovers(message.guild, counts);
 
 });
 

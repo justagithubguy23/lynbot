@@ -8,13 +8,17 @@ module.exports = {
 
     async execute(message, args, data) {
 
+        console.log("Scan command started");
+
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             return message.reply("❌ Only **Staff** can run this command.");
         }
 
         const progress = await message.reply("🔍 Starting scan...");
 
-        data.counts = {};
+        for (const key in data.counts) {
+    delete data.counts[key];
+}
 
         const channels = message.guild.channels.cache.filter(
             c => c.type === ChannelType.GuildText
@@ -23,6 +27,8 @@ module.exports = {
         let scanned = 0;
 
         for (const channel of channels.values()) {
+
+            console.log("Scanning channel:", channel.name);
 
             scanned++;
 
@@ -34,10 +40,14 @@ module.exports = {
 
             while (true) {
 
-                const messages = await channel.messages.fetch({
+                
+                 const messages = await channel.messages.fetch({
                     limit: 100,
                     before: lastId
-                }).catch(() => null);
+                    }).catch(err => {
+                    console.log("FETCH ERROR:", channel.name, err);
+                     return null;
+                     });
 
                 if (!messages || messages.size === 0) break;
 
@@ -52,24 +62,40 @@ module.exports = {
 
                 });
 
-                lastId = messages.last().id;
-            }
-        }
+                console.log(channel.name, "Fetched", messages?.size, "messages");
 
+                const newLastId = messages.last().id;
+
+                   if (newLastId === lastId) {
+             console.log("Same message ID, stopping loop");
+                         break;
+                          }
+
+                      lastId = newLastId;
+            }
+
+           console.log("Finished channel:", channel.name); 
+        }
+        console.log("Saving counts...");
         data.saveCounts();
 
         for (const userId in data.counts) {
 
             const member = await message.guild.members.fetch(userId).catch(() => null);
-
+              console.log("Updating roles...");
             if (member) {
                 await data.giveRoles(member, message.channel);
             }
         }
-        await data.updateTopLynLovers(message.guild, counts);
-        return progress.edit(
+        console.log(data.counts);
+        console.log("Users:", Object.keys(data.counts).length);
+        console.log("Updating leaderboard...");
+        await data.updateTopLynLovers(message.guild, data.counts);
+        console.log("Leaderboard updated.");
+        await progress.edit(
             `✅ Scan complete!\n\n👥 Users found: **${Object.keys(data.counts).length}**`
         ); 
+        console.log("Done!");
         
     
     }
