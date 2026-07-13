@@ -1,30 +1,44 @@
-const { updateTopLynLovers } = require("../utils/topLyn");
 const { counts } = require("../utils/counts");
+const { updateTopLynLovers } = require("../utils/topLyn");
+
 
 module.exports = {
+
     name: "lynlovers",
+
 
     async execute(message) {
 
-        await updateTopLynLovers(message.guild, counts);
+
+        await updateTopLynLovers(
+            message.guild,
+            counts
+        );
+
 
         let leaderboard = [];
+
 
         for (const userId in counts) {
 
             const user = await message.client.users.fetch(userId)
-                .catch(() => null);
+                .catch(()=>null);
+
 
             if (!user) continue;
 
+
             leaderboard.push({
-                username: user.username,
-                count: counts[userId]
+                username:user.username,
+                count:counts[userId]
             });
+
         }
 
 
-        leaderboard.sort((a,b) => b.count - a.count);
+        leaderboard.sort(
+            (a,b)=>b.count-a.count
+        );
 
 
         let text = "💘 **Lyn Lovers** 💘\n\n";
@@ -32,11 +46,13 @@ module.exports = {
 
         leaderboard.forEach((user,index)=>{
 
-            text += `${index + 1}. **${user.username}**: ${user.count} lyns\n`;
+            text += `${index+1}. **${user.username}**: ${user.count} lyns\n`;
 
         });
 
 
         message.channel.send(text);
+
     }
+
 };
