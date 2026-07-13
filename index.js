@@ -26,13 +26,6 @@ for (const file of commandFiles) {
 
 }
 
-const botData = {
-    counts,
-    saveCounts,
-    giveRoles,
-    updateTopLynLovers,
-    commands
-};
 
 
 console.log(`Loaded ${commands.size} commands.`);
@@ -104,6 +97,15 @@ if (message.content.toLowerCase() === "!scan") {
     );
 
 }
+
+const botData = {
+    counts,
+    saveCounts,
+    giveRoles,
+    updateTopLynLovers,
+    commands
+};
+
 
 
 client.on("messageCreate", async (message) => {
