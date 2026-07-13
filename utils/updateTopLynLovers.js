@@ -14,7 +14,7 @@ async function updateTopLynLovers(guild, counts) {
 
    const announcementChannel = guild.channels.cache.find(
     channel =>
-        channel.name.toLowerCase() === "general" &&
+        channel.name.toLowerCase() === "💭︱general" &&
         channel.isTextBased()
 );
 
