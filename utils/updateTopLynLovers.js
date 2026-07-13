@@ -12,11 +12,13 @@ async function updateTopLynLovers(guild, counts) {
         .slice(0, 5)
         .map(([id]) => id);
 
-    const announcementChannel = guild.channels.cache.find(
+   const announcementChannel = guild.channels.cache.find(
     channel =>
         channel.name.toLowerCase() === "general" &&
         channel.isTextBased()
 );
+
+console.log("Announcement channel:", announcementChannel?.name);
 
     // Remove role from users no longer in the top 5
     for (const member of [...topRole.members.values()]) {
