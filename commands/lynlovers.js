@@ -11,7 +11,10 @@ module.exports = {
             message.guild,
             counts
         );
-    await updateTopLynLovers(message.guild, counts);
+    await await data.updateTopLynLovers(
+    message.guild,
+    data.counts
+);
 
     leaderboard.sort((a, b) => b.count - a.count);
 
