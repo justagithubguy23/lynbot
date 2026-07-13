@@ -12,7 +12,11 @@ async function updateTopLynLovers(guild, counts) {
         .slice(0, 5)
         .map(([id]) => id);
 
-    const announcementChannel = guild.systemChannel;
+    const announcementChannel = guild.channels.cache.find(
+    channel =>
+        channel.name.toLowerCase() === "general" &&
+        channel.isTextBased()
+);
 
     // Remove role from users no longer in the top 5
     for (const member of [...topRole.members.values()]) {
@@ -46,7 +50,7 @@ async function updateTopLynLovers(guild, counts) {
 
             if (announcementChannel) {
                 await announcementChannel.send(
-                    `🏆 ${member} is now one of the **Top 5 Lyn Lovers!**`
+                    `🏆 ${member} is now one of the **Top 5 Lyn Lovers**, congrats!`
                 ).catch(() => {});
             }
         }
