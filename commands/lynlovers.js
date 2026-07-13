@@ -1,54 +1,42 @@
+const { updateTopLynLovers } = require("../utils/topLyn");
+const { counts } = require("../utils/counts");
 
 module.exports = {
-
     name: "lynlovers",
 
-    async execute(message, client, data) {
+    async execute(message) {
 
-        const counts = data.counts;
+        await updateTopLynLovers(message.guild, counts);
 
-        await data.updateTopLynLovers(
-            message.guild,
-            counts
-        );
-    await await data.updateTopLynLovers(
-    message.guild,
-    data.counts
-);
+        let leaderboard = [];
 
-    leaderboard.sort((a, b) => b.count - a.count);
+        for (const userId in counts) {
 
-    let text = "💘 **Lyn Lovers ** 💘\n\n";
+            const user = await message.client.users.fetch(userId)
+                .catch(() => null);
 
-    leaderboard.forEach((user, index) => {
-        text += `${index + 1}. **${user.username}**: ${user.count} lyns\n`;
-    });
+            if (!user) continue;
 
-
-    // Non-staff
-    if (!message.member.roles.cache.has(staffRole.id)) {
-
-        try {
-            await message.author.send(
-                "❌ You are not allowed to use the `!lynlovers` command in chat.\n\n" +
-                "Here are the current Lyn Lovers:\n\n" +
-                text
-            );
-
-            return message.reply("📩 For flood reasons, you don't have permission to use this command. I sent the stats to your DMs.");
-
-        } catch {
-            return message.reply(
-                "❌ You are not allowed to use this command, and I couldn't DM you."
-            );
+            leaderboard.push({
+                username: user.username,
+                count: counts[userId]
+            });
         }
-    }
 
 
-    // Staff
-    return message.channel.send(text);
+        leaderboard.sort((a,b) => b.count - a.count);
 
 
+        let text = "💘 **Lyn Lovers** 💘\n\n";
 
+
+        leaderboard.forEach((user,index)=>{
+
+            text += `${index + 1}. **${user.username}**: ${user.count} lyns\n`;
+
+        });
+
+
+        message.channel.send(text);
     }
 };
