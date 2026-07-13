@@ -85,18 +85,7 @@ function saveCounts() {
     fs.writeFileSync("counts.json", JSON.stringify(counts, null, 2));
 }
 
-if (message.content.toLowerCase() === "!scan") {
 
-    return scanCommand.execute(
-        message,
-        client,
-        counts,
-        saveCounts,
-        giveRoles,
-        updateTopLynLovers
-    );
-
-}
 
 const botData = {
     counts,
