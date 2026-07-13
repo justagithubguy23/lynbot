@@ -9,7 +9,14 @@ const lynloversCommand = require("./commands/lynlovers");
 const lynstatsCommand = require("./commands/lynstats");
 
 
-const fs = require("fs");
+const fs = require("fs"); 
+
+console.log("Current folder:");
+console.log(fs.readdirSync("."));
+
+console.log("Utils folder:");
+console.log(fs.readdirSync("./utils"));
+
 const path = require("path");
 
 client.commands = new Collection();
