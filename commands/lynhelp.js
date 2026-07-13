@@ -1,19 +1,19 @@
-
-
-   
 module.exports = {
+
     name: "lynhelp",
 
     async execute(message, client, data) {
 
-    let text = "🩷 **Lyn Bot Commands** 🩷\n\n";
+        let text = "🩷 **Lyn Bot Commands** 🩷\n\n";
 
-    for (const command in commands) {
-        text += `\`${command}\`\n> ${commands[command]}\n\n`;
+        for (const [name, command] of data.commands) {
+
+            text += `\`!${name}\`\n`;
+
+        }
+
+        return message.reply(text);
+
     }
 
-    return message.reply(text);
-}
-
-
-    }
+};

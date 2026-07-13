@@ -125,13 +125,14 @@ async function giveRoles(member, channel) {
 }
 
 const botData = {
+
     counts,
     saveCounts,
     giveRoles,
     updateTopLynLovers,
     commands
-};
 
+};
 
 
 client.on("messageCreate", async (message) => {
@@ -147,7 +148,7 @@ const command = commands.get(commandName);
 
 if (command) {
 
-    return command.execute(
+    await command.execute(
         message,
         client,
         botData

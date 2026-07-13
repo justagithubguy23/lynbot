@@ -1,28 +1,16 @@
 
 module.exports = {
+
     name: "lynlovers",
 
-    async execute(message, client, counts, saveCounts, giveRoles, updateTopLynLovers) {
+    async execute(message, client, data) {
 
-       
+        const counts = data.counts;
 
-    const staffRole = message.guild.roles.cache.find(
-        role => role.name === "Staff"
-    );
-
-    let leaderboard = [];
-
-    for (const userId in counts) {
-
-        const user = await client.users.fetch(userId).catch(() => null);
-
-        if (!user) continue;
-
-        leaderboard.push({
-            username: user.username,
-            count: counts[userId]
-        });
-    }
+        await data.updateTopLynLovers(
+            message.guild,
+            counts
+        );
     await updateTopLynLovers(message.guild, counts);
 
     leaderboard.sort((a, b) => b.count - a.count);
