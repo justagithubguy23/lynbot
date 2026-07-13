@@ -6,7 +6,7 @@ const { PermissionsBitField, ChannelType } = require("discord.js");
 module.exports = {
     name: "scan",
 
-    async execute(message, client, counts, saveCounts, giveRoles, updateTopLynLovers) {
+    async execute(message, args, data) {
 
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             return message.reply("❌ Only **Staff** can run this command.");
@@ -14,7 +14,7 @@ module.exports = {
 
         const progress = await message.reply("🔍 Starting scan...");
 
-        counts = {};
+        data.counts = {};
 
         const channels = message.guild.channels.cache.filter(
             c => c.type === ChannelType.GuildText
@@ -46,8 +46,8 @@ module.exports = {
                     if (msg.author.bot) return;
 
                     if (msg.content.toLowerCase().includes("lyn")) {
-                        counts[msg.author.id] =
-                            (counts[msg.author.id] || 0) + 1;
+                        data.counts[msg.author.id] =
+                         (data.counts[msg.author.id] || 0) + 1;
                     }
 
                 });
@@ -56,21 +56,21 @@ module.exports = {
             }
         }
 
-        saveCounts();
+        data.saveCounts();
 
-        for (const userId in counts) {
+        for (const userId in data.counts) {
 
             const member = await message.guild.members.fetch(userId).catch(() => null);
 
             if (member) {
-                await giveRoles(member, message.channel);;
+                await data.giveRoles(member, message.channel);
             }
         }
-
+        await data.updateTopLynLovers(message.guild, counts);
         return progress.edit(
-            `✅ Scan complete!\n\n👥 Users found: **${Object.keys(counts).length}**`
+            `✅ Scan complete!\n\n👥 Users found: **${Object.keys(data.counts).length}**`
         ); 
-        await updateTopLynLovers(message.guild, counts);
+        
     
     }
 };
