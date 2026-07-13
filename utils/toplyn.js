@@ -1,68 +1,54 @@
 const TOP_ROLE = "top lyn lover";
 
-
-async function updateTopLynLovers(guild, counts){
-
+async function updateTopLynLovers(guild, counts) {
 
     const topRole = guild.roles.cache.find(
-        r => r.name === TOP_ROLE
+        role => role.name === TOP_ROLE
     );
-
 
     if (!topRole) return;
 
 
-    const topUsers = Object.entries(counts)
-        .sort((a,b)=>b[1]-a[1])
-        .slice(0,5)
-        .map(x=>x[0]);
+    const sortedUsers = Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(entry => entry[0]);
 
 
+    // Remove role from people no longer top 5
+    for (const member of topRole.members.values()) {
 
-    // remove people who are no longer top 5
-
-    for(const member of topRole.members.values()){
-
-        if(!topUsers.includes(member.id)){
+        if (!sortedUsers.includes(member.id)) {
 
             await member.roles.remove(topRole)
-                .catch(()=>{});
+                .catch(() => {});
 
             console.log(
-                `${member.user.username} lost Top Lyn Lover`
+                `${member.user.tag} lost Top Lyn Lover role`
             );
         }
-
     }
 
 
+    // Give role to new top 5
+    for (const userId of sortedUsers) {
 
-    // give role to top 5
+        const member = await guild.members.fetch(userId)
+            .catch(() => null);
 
-    for(const id of topUsers){
-
-        const member = await guild.members.fetch(id)
-            .catch(()=>null);
-
-
-        if(!member) continue;
+        if (!member) continue;
 
 
-        if(!member.roles.cache.has(topRole.id)){
-
+        if (!member.roles.cache.has(topRole.id)) {
 
             await member.roles.add(topRole)
-                .catch(()=>{});
-
+                .catch(() => {});
 
             console.log(
-                `${member.user.username} became a Top Lyn Lover.`
+                `${member.user.tag} became a Top Lyn Lover`
             );
-
         }
-
     }
-
 }
 
 

@@ -1,12 +1,21 @@
 require("dotenv").config();
 
-const { Client, GatewayIntentBits, ChannelType, PermissionsBitField } = require("discord.js");
+const { Client, GatewayIntentBits, ChannelType, PermissionsBitField, Collection } = require("discord.js");
 
 const scanCommand = require("./commands/scan");
 const lynhelpCommand = require("./commands/lynhelp");
 const changelynCommand = require("./commands/changelyn");
 const lynloversCommand = require("./commands/lynlovers");
 const lynstatsCommand = require("./commands/lynstats");
+
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers
+    ]
+});
 
 
 const fs = require("fs"); 
@@ -82,14 +91,6 @@ app.listen(8000, () => {
 
 
 
-const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildMembers
-    ]
-});
 
 const TOKEN = process.env.TOKEN;
 
