@@ -30,8 +30,6 @@ for(const file of commandFiles){
 }
 
 
-const fs = require("fs");
-
 console.log(fs.readdirSync("./utils"));
 
 
