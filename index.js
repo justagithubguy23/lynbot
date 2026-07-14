@@ -12,6 +12,9 @@ const lynhelpCommand = require("./commands/lynhelp");
 const changelynCommand = require("./commands/changelyn");
 const lynloversCommand = require("./commands/lynlovers");
 const lynstatsCommand = require("./commands/lynstats");
+const lynblacklistCommand = require("./commands/lynblacklist");
+const lynunblacklistCommand = require("./commands/lynunblacklist");
+const lynblacklistedCommand = require("./commands/lynunblacklisted");
 
 const client = new Client({
     intents: [
