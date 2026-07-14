@@ -1,4 +1,12 @@
-module.exports = {
+
+const { blacklist } = require("../utils/blacklist");
+
+const amount = blacklist.includes(message.author.id)
+    ? 0
+    : (data.counts[message.author.id] || 0);
+
+    module.exports = {
+    
     name: "lynstats",
 
     async execute(message, args, data) {

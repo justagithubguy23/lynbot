@@ -1,5 +1,7 @@
 const TOP_ROLE = "top lyn lover";
 
+const { blacklist } = require("./blacklist");
+
 async function updateTopLynLovers(guild, counts) {
 
     const topRole = guild.roles.cache.find(r => r.name === TOP_ROLE);
@@ -8,6 +10,7 @@ async function updateTopLynLovers(guild, counts) {
 
     // Get the top 5 users
     const topUsers = Object.entries(counts)
+    .filter(([id]) => !blacklist.includes(id))
         .sort((a, b) => b[1] - a[1])
         .slice(0, 5)
         .map(([id]) => id);

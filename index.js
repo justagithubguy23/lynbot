@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const { Client, GatewayIntentBits, ChannelType, PermissionsBitField, Collection } = require("discord.js");
+const { blacklist } = require("./utils/blacklist");
 
 const { giveRoles } = require("./utils/giveroles");
 
@@ -134,9 +135,11 @@ client.on("messageCreate", async message => {
         return;
 
 
-    counts[message.author.id] =
-        (counts[message.author.id] || 0) + 1;
+   if (blacklist.includes(message.author.id))
+    return;
 
+   counts[message.author.id] =
+    (counts[message.author.id] || 0) + 1;
 
     saveCounts();
 

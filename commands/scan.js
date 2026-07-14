@@ -13,7 +13,7 @@ module.exports = {
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             return message.reply("❌ Only **Staff** can run this command.");
         }
-
+        const { blacklist } = require("../utils/blacklist");
         const progress = await message.reply("🔍 Starting scan...");
 
         for (const key in data.counts) {
@@ -53,7 +53,10 @@ module.exports = {
 
                 messages.forEach(msg => {
 
-                    if (msg.author.bot) return;
+                   if (msg.author.bot) return;
+
+                    if (blacklist.includes(msg.author.id))
+                       return;
 
                     if (msg.content.toLowerCase().includes("lyn")) {
                         data.counts[msg.author.id] =
