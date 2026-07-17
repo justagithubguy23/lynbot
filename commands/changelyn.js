@@ -8,9 +8,12 @@ module.exports = {
 
     async execute(message, args, data) {
 
-        if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-            return message.reply("❌ Only **Staff** can use this command.");
-        }
+        
+        const STAFF_ROLE_ID = "1439086500984655936";
+
+if (!message.member.roles.cache.has(STAFF_ROLE_ID)) {
+    return message.reply("❌ Only Staff can use this.");
+}
 
         let target = message.mentions.users.first();
 

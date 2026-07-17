@@ -10,7 +10,7 @@ module.exports = {
 
         console.log("Scan command started");
 
-        const STAFF_ROLE_ID = "123456789012345678";
+        const STAFF_ROLE_ID = "1439086500984655936";
 
 if (!message.member.roles.cache.has(STAFF_ROLE_ID)) {
     return message.reply("❌ Only Staff can use this.");
