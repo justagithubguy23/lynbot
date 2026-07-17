@@ -114,6 +114,8 @@ const botData = {
 };
 
 
+
+
 client.on("messageCreate", async message => {
 
     if (message.author.bot) return;
@@ -135,17 +137,24 @@ client.on("messageCreate", async message => {
     }
 
 
-    if (!message.content.toLowerCase().includes("lyn"))
-        return;
-
-
-   if (blacklist.includes(message.author.id))
+   if (!message.content.toLowerCase().includes("lyn"))
     return;
 
-   counts[message.author.id] =
+const blacklistRole = message.guild.roles.cache.find(
+    r => r.name === "lyn blacklisted"
+);
+
+if (
+    blacklistRole &&
+    message.member.roles.cache.has(blacklistRole.id)
+) {
+    return;
+}
+
+counts[message.author.id] =
     (counts[message.author.id] || 0) + 1;
 
-    saveCounts();
+saveCounts();
 
     console.log(
         `${message.author.tag}: ${counts[message.author.id]}`
@@ -169,24 +178,45 @@ client.on("messageCreate", async message => {
     
     
 
-   
 
-  
-    
+ client.once("ready", async () => {
+    console.log(`Logged in as ${client.user.tag}`);
 
+    for (const guild of client.guilds.cache.values()) {
 
-   
+        console.log(`Running startup scan for ${guild.name}...`);
 
+        // Find a text channel the bot can use
+        const channel = guild.channels.cache.find(channel =>
+            channel.isTextBased() &&
+            channel.permissionsFor(guild.members.me).has([
+                PermissionsBitField.Flags.ViewChannel,
+                PermissionsBitField.Flags.ReadMessageHistory
+            ])
+        );
 
+        if (!channel) {
+            console.log(`No usable channel found in ${guild.name}`);
+            continue;
+        }
 
+        // Run the scan command
+        await scanCommand.execute(
+            {
+                guild,
+                member: guild.members.me,
+                channel,
+                reply: async (text) => ({
+                    edit: async () => {}
+                })
+            },
+            [],
+            botData
+        );
 
-
-
-
-
-
-
-    
+        console.log(`Finished startup scan for ${guild.name}`);
+    }
+});   
 
 
 client.login(TOKEN);

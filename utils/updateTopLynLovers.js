@@ -8,12 +8,27 @@ async function updateTopLynLovers(guild, counts) {
 
     if (!topRole) return;
 
-    // Get the top 5 users
-    const topUsers = Object.entries(counts)
-    .filter(([id]) => !blacklist.includes(id))
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
-        .map(([id]) => id);
+    
+   const blacklistRole = guild.roles.cache.find(
+    r => r.name === "lyn blacklisted"
+);
+
+// Get the top 5 users (excluding users who left and blacklisted users)
+const topUsers = Object.entries(counts)
+    .filter(([id]) => {
+        const member = guild.members.cache.get(id);
+
+        // Ignore users who left the server
+        if (!member) return false;
+
+        // Ignore blacklisted users
+        return !member.roles.cache.some(
+            r => r.name === "lyn blacklisted"
+        );
+    })
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([id]) => id);
 
    const announcementChannel = guild.channels.cache.find(
     channel =>

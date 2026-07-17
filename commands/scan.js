@@ -12,11 +12,19 @@ module.exports = {
 
         const STAFF_ROLE_ID = "1439086500984655936";
 
-if (!message.member.roles.cache.has(STAFF_ROLE_ID)) {
+if (
+    message.member &&
+    !message.member.roles.cache.has(STAFF_ROLE_ID)
+)
+ {
     return message.reply("❌ Only Staff can use this.");
 }
         const { blacklist } = require("../utils/blacklist");
-        const progress = await message.reply("🔍 Starting scan...");
+        const progress = message.reply
+    ? await message.reply("🔍 Starting scan...")
+    : {
+        edit: async (text) => console.log(text)
+    };
 
         for (const key in data.counts) {
     delete data.counts[key];
@@ -53,19 +61,25 @@ if (!message.member.roles.cache.has(STAFF_ROLE_ID)) {
 
                 if (!messages || messages.size === 0) break;
 
-                messages.forEach(msg => {
+              messages.forEach(msg => {
 
-                   if (msg.author.bot) return;
+    if (msg.author.bot) return;
 
-                    if (blacklist.includes(msg.author.id))
-                       return;
+    // Ignore users who are no longer in the server
+    const member = message.guild.members.cache.get(msg.author.id);
+    if (!member) return;
 
-                    if (msg.content.toLowerCase().includes("lyn")) {
-                        data.counts[msg.author.id] =
-                         (data.counts[msg.author.id] || 0) + 1;
-                    }
+    // Ignore blacklisted users
+    if (member.roles.cache.some(r => r.name === "lyn blacklisted"))
+        return;
 
-                });
+    if (msg.content.toLowerCase().includes("lyn")) {
+        data.counts[msg.author.id] =
+            (data.counts[msg.author.id] || 0) + 1;
+    }
+
+});
+                
 
                 console.log(channel.name, "Fetched", messages?.size, "messages");
 

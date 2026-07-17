@@ -37,6 +37,19 @@ module.exports = {
             username = message.author.username;
         }
 
+        const member = await message.guild.members.fetch(targetId).catch(() => null);
+
+if (
+    member &&
+    member.roles.cache.some(r => r.name === "lyn blacklisted")
+) {
+    return message.reply(
+        `📊 **${member.user.username}'s Lyn Stats**\n\n` +
+        `🔥 Lyns said: **0**\n` +
+        `🚫 This user is **Lyn Blacklisted.**`
+    );
+}
+
 
         return message.reply(
             `📊 **${username}'s Lyn Stats**\n\n` +
