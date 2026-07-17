@@ -10,9 +10,11 @@ module.exports = {
 
         console.log("Scan command started");
 
-        if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-            return message.reply("❌ Only **Staff** can run this command.");
-        }
+        const STAFF_ROLE_ID = "123456789012345678";
+
+if (!message.member.roles.cache.has(STAFF_ROLE_ID)) {
+    return message.reply("❌ Only Staff can use this.");
+}
         const { blacklist } = require("../utils/blacklist");
         const progress = await message.reply("🔍 Starting scan...");
 
