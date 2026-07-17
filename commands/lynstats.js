@@ -5,14 +5,12 @@ module.exports = {
 
         let targetId;
 
-        // If a user mention was used
-        const mentionedUser = message.mentions.users.first();
-
-        if (mentionedUser) {
-            targetId = mentionedUser.id;
+        // If a user is mentioned
+        if (message.mentions.users.first()) {
+            targetId = message.mentions.users.first().id;
         }
 
-        // If a raw ID was used
+        // If an ID was typed
         else if (args[0] && /^\d+$/.test(args[0])) {
             targetId = args[0];
         }
@@ -23,35 +21,17 @@ module.exports = {
         }
 
 
+        const targetMember = await message.guild.members.fetch(targetId).catch(() => null);
+
+        const username = targetMember
+            ? targetMember.user.username
+            : targetId;
+
+
         const amount = data.counts[targetId] || 0;
 
 
-        let username = "Unknown User";
-
-        const member = await message.guild.members.fetch(targetId).catch(() => null);
-
-        if (member) {
-            username = member.user.username;
-        }
-        else if (targetId === message.author.id) {
-            username = message.author.username;
-        }
-
-        const member = await message.guild.members.fetch(targetId).catch(() => null);
-
-if (
-    member &&
-    member.roles.cache.some(r => r.name === "lyn blacklisted")
-) {
-    return message.reply(
-        `📊 **${member.user.username}'s Lyn Stats**\n\n` +
-        `🔥 Lyns said: **0**\n` +
-        `🚫 This user is **Lyn Blacklisted.**`
-    );
-}
-
-
-        return message.reply(
+        message.reply(
             `📊 **${username}'s Lyn Stats**\n\n` +
             `🔥 Lyns said: **${amount}**`
         );
